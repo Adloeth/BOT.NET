@@ -12,7 +12,9 @@ namespace FFF
     /// <br></br>x = 1111 1111 (256), y = 0000 1010 (10) and z = 1011 0100 (180).
     /// <br></br>t = 1111 1111   0000 1010   1011 0100 (16714420)
     /// <code>
-    ///     PrimitiveCombiner combiner = new PrimitiveCombiner();
+    ///     //         Use the capacity (in bytes) if you already know how much bytes you are going to combine !
+    ///     //                                                 V
+    ///     PrimitiveCombiner combiner = new PrimitiveCombiner(3);
     ///     Tribyte t = combiner.Combine(256).Combine(10).Combine(180).ToTribyte();
     ///     //or, when only using bytes.
     ///     Tribyte t = combiner.Combine(256, 10, 180).ToTribyte();

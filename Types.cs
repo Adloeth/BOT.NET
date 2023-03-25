@@ -28,7 +28,7 @@ namespace FFF
 		public uint ToUInt() 
 			=> (uint)data[0] | ((uint)data[1] << 8) | ((uint)data[2] << 16);
 
-    	public override bool Equals(object obj)
+    	public override bool Equals(object? obj)
     	{
     	    if (obj == null || !(obj is Tribyte other))
     	        return false;
@@ -75,7 +75,7 @@ namespace FFF
 		public ulong ToUlong() 
 			=> (ulong)data[0] | ((ulong)data[1] << 8) | ((ulong)data[2] << 16) | ((ulong)data[3] << 24) | ((ulong)data[4] << 32);
 
-    	public override bool Equals(object obj)
+    	public override bool Equals(object? obj)
     	{
     	    if (obj == null || !(obj is Pentabyte other))
     	        return false;
@@ -122,7 +122,7 @@ namespace FFF
 		public ulong ToUlong() 
 			=> (ulong)data[0] | ((ulong)data[1] << 8) | ((ulong)data[2] << 16) | ((ulong)data[3] << 24) | ((ulong)data[4] << 32) | ((ulong)data[5] << 40);
 
-    	public override bool Equals(object obj)
+    	public override bool Equals(object? obj)
     	{
     	    if (obj == null || !(obj is Hexabyte other))
     	        return false;
@@ -169,7 +169,7 @@ namespace FFF
 		public ulong ToUlong() 
 			=> (ulong)data[0] | ((ulong)data[1] << 8) | ((ulong)data[2] << 16) | ((ulong)data[3] << 24) | ((ulong)data[4] << 32) | ((ulong)data[5] << 40) | ((ulong)data[6] << 48);
 
-    	public override bool Equals(object obj)
+    	public override bool Equals(object? obj)
     	{
     	    if (obj == null || !(obj is Heptabyte other))
     	        return false;
