@@ -34,6 +34,8 @@ namespace FFF
             data = new List<byte>(capacity);
         }
 
+        #region COMBINERS
+
         /// <summary>Checks for endianness before combining.</summary>
         public PrimitiveCombiner CheckedCombine(byte[] bytes)
         {
@@ -49,79 +51,101 @@ namespace FFF
         public PrimitiveCombiner Combine(params byte[] val)
         { data.AddRange(val); return this; }
 
+        public PrimitiveCombiner Combine(sbyte val)
+            => Combine((byte)val);
+        public PrimitiveCombiner Combine(params sbyte[] val)
+            => Combine((byte[])(Array)val);
+
+
         public PrimitiveCombiner Combine(ushort val)
             => CheckedCombine(BitConverter.GetBytes(val));
         public PrimitiveCombiner Combine(params ushort[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
+
+        public PrimitiveCombiner Combine(short val)
+            => Combine((ushort)val);
+        public PrimitiveCombiner Combine(params short[] val)
+            => Combine((ushort[])(Array)val);
+
 
         public PrimitiveCombiner Combine(Tribyte val)
             => CheckedCombine(val.GetBytes());
         public PrimitiveCombiner Combine(params Tribyte[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
 
+
         public PrimitiveCombiner Combine(uint val)
             => CheckedCombine(BitConverter.GetBytes(val));
         public PrimitiveCombiner Combine(params uint[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
+
+        public PrimitiveCombiner Combine(int val)
+            => Combine((uint)val);
+        public PrimitiveCombiner Combine(params int[] val)
+            => Combine((uint[])(Array)val);
+
 
         public PrimitiveCombiner Combine(Pentabyte val)
             => CheckedCombine(val.GetBytes());
         public PrimitiveCombiner Combine(params Pentabyte[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
 
+
         public PrimitiveCombiner Combine(Hexabyte val)
             => CheckedCombine(val.GetBytes());
         public PrimitiveCombiner Combine(params Hexabyte[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
+
 
         public PrimitiveCombiner Combine(Heptabyte val)
             => CheckedCombine(val.GetBytes());
         public PrimitiveCombiner Combine(params Heptabyte[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
 
+
         public PrimitiveCombiner Combine(ulong val)
             => CheckedCombine(BitConverter.GetBytes(val));
         public PrimitiveCombiner Combine(params ulong[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
+
+        public PrimitiveCombiner Combine(long val)
+            => Combine((ulong)val);
+        public PrimitiveCombiner Combine(params long[] val)
+            => Combine((ulong[])(Array)val);
+
 
         public PrimitiveCombiner Combine(LargeInt val)
             => CheckedCombine(val.GetBytes());
         public PrimitiveCombiner Combine(params LargeInt[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
 
+
         public PrimitiveCombiner Combine(BigInt val)
             => CheckedCombine(val.GetBytes());
         public PrimitiveCombiner Combine(params BigInt[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
+
 
         public PrimitiveCombiner Combine(GreatInt val)
             => CheckedCombine(val.GetBytes());
         public PrimitiveCombiner Combine(params GreatInt[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
 
+
         public PrimitiveCombiner Combine(HugeInt val)
             => CheckedCombine(val.GetBytes());
         public PrimitiveCombiner Combine(params HugeInt[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
+
 
         public PrimitiveCombiner Combine(GiantInt val)
             => CheckedCombine(val.GetBytes());
         public PrimitiveCombiner Combine(params GiantInt[] val)
         { for(int i = 0; i < val.Length; i++) Combine(val[i]); return this; }
 
-        private void CheckSize(int size, string varName)
-        {
-            if(data.Count < size)
-                throw new Exception(string.Concat("Cannot convert combiner to ", varName, " (", size ,"), the current combiner size is ", data.Count, " bytes."));
-        }
+        #endregion
 
-        private byte[] InternalConvertTo(int size)
-        {
-            byte[] result = new byte[size];
-            byte[] dataArray = Standard.IsSystemLittleEndian() ? data.ToArray() : data.Reverse<byte>().ToArray();
-            Array.Copy(dataArray, 0, result, 0, size);
-            return result;
-        }
+        #region PRIMITIVE CONVERTERS
 
         public byte ToByte() 
         {
@@ -202,6 +226,23 @@ namespace FFF
             CheckSize(64, "giant int");
             return new GiantInt(InternalConvertTo(64));
         }
+
+        #endregion
+    
+        private void CheckSize(int size, string varName)
+        {
+            if(data.Count < size)
+                throw new Exception(string.Concat("Cannot convert combiner to ", varName, " (", size ,"), the current combiner size is ", data.Count, " bytes."));
+        }
+
+        private byte[] InternalConvertTo(int size)
+        {
+            byte[] result = new byte[size];
+            byte[] dataArray = Standard.IsSystemLittleEndian() ? data.ToArray() : data.Reverse<byte>().ToArray();
+            Array.Copy(dataArray, 0, result, 0, size);
+            return result;
+        }
+    
     }
 
     /// <summary>
@@ -223,13 +264,55 @@ namespace FFF
         private byte[] data;
         private int current;
 
-        private PrimitiveExtractor(byte[] data) { this.data = data; }
+        #region CONSTRUCTORS
+
+        public PrimitiveExtractor(byte[] data) 
+        {
+            if(Standard.IsSystemLittleEndian())
+                this.data = data;
+            else 
+                this.data = data.Reverse().ToArray(); 
+        }
+
+        public PrimitiveExtractor(byte data) : this(new byte[1] { data }) { }
+        public PrimitiveExtractor(sbyte data) : this(new byte[1] { (byte)data }) { }
+
+        public PrimitiveExtractor(ushort data) : this(BitConverter.GetBytes(data)) { }
+        public PrimitiveExtractor(short data) : this(BitConverter.GetBytes(data)) { }
+
+        public PrimitiveExtractor(Tribyte data) : this(data.GetBytes()) { }
+
+        public PrimitiveExtractor(uint data) : this(BitConverter.GetBytes(data)) { }
+        public PrimitiveExtractor(int data) : this(BitConverter.GetBytes(data)) { }
+
+        public PrimitiveExtractor(Pentabyte data) : this(data.GetBytes()) { }
+
+        public PrimitiveExtractor(Hexabyte data) : this(data.GetBytes()) { }
+
+        public PrimitiveExtractor(Heptabyte data) : this(data.GetBytes()) { }
+
+        public PrimitiveExtractor(ulong data) : this(BitConverter.GetBytes(data)) { }
+        public PrimitiveExtractor(long data) : this(BitConverter.GetBytes(data)) { }
+
+        public PrimitiveExtractor(LargeInt data) : this(data.GetBytes()) { }
+
+        public PrimitiveExtractor(BigInt data) : this(data.GetBytes()) { }
+
+        public PrimitiveExtractor(GreatInt data) : this(data.GetBytes()) { }
+
+        public PrimitiveExtractor(HugeInt data) : this(data.GetBytes()) { }
+
+        public PrimitiveExtractor(GiantInt data) : this(data.GetBytes()) { }
+
+        #endregion
+
+        #region EXTRACTORS
 
         public byte[] CheckedExtract(int size)
         {
             byte[] bytes = new byte[size];
             Array.Copy(data, current, bytes, 0, size);
-            if(Standard.IsSystemLittleEndian())
+            if(!Standard.IsSystemLittleEndian())
                 bytes = bytes.Reverse().ToArray();
             current += size;
             return bytes;
@@ -241,9 +324,6 @@ namespace FFF
             return this;
         }
 
-        public PrimitiveExtractor Extract(out byte val)
-        { val = data[current++]; return this; }
-
         public PrimitiveExtractor Extract(out byte[] val, int size)
         {
             val = new byte[size];
@@ -252,14 +332,26 @@ namespace FFF
             return this;
         }
 
+        public PrimitiveExtractor Extract(out byte val)
+        { val = data[current++]; return this; }
+
+        public PrimitiveExtractor Extract(out sbyte val)
+        { Extract(out byte tmp); val = (sbyte)tmp; return this; }
+
         public PrimitiveExtractor Extract(out ushort val)
         { val = BitConverter.ToUInt16(CheckedExtract(2)); return this; }
+
+        public PrimitiveExtractor Extract(out short val)
+        { Extract(out ushort tmp); val = (short)tmp; return this; }
 
         public PrimitiveExtractor Extract(out Tribyte val)
         { val = new Tribyte(CheckedExtract(3)); return this; }
 
         public PrimitiveExtractor Extract(out uint val)
         { val = BitConverter.ToUInt32(CheckedExtract(4)); return this; }
+
+        public PrimitiveExtractor Extract(out int val)
+        { Extract(out uint tmp); val = (int)tmp; return this; }
 
         public PrimitiveExtractor Extract(out Pentabyte val)
         { val = new Pentabyte(CheckedExtract(5)); return this; }
@@ -272,6 +364,9 @@ namespace FFF
 
         public PrimitiveExtractor Extract(out ulong val)
         { val = BitConverter.ToUInt64(CheckedExtract(8)); return this; }
+
+        public PrimitiveExtractor Extract(out long val)
+        { Extract(out ulong tmp); val = (long)tmp; return this; }
 
         public PrimitiveExtractor Extract(out LargeInt val)
         { val = new LargeInt(CheckedExtract(12)); return this; }
@@ -287,5 +382,7 @@ namespace FFF
 
         public PrimitiveExtractor Extract(out GiantInt val)
         { val = new GiantInt(CheckedExtract(64)); return this; }
+
+        #endregion
     }
 }

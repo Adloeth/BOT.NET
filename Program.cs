@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Json;
 
 namespace FFF;
 
@@ -31,6 +32,7 @@ public struct Vector2i
 public class Test : ISerializable
 {
     private Vector2i position;
+    private int x, y;
     private Tribyte whatever;
     private int test0;
     private Test anotherObj;
@@ -38,6 +40,8 @@ public class Test : ISerializable
     public Test(Vector2i position, Tribyte whatever, int test0, Test anotherObj)
     {
         this.position = position;
+        this.x = position.x;
+        this.y = position.y;
         this.whatever = whatever;
         this.test0 = test0;
         this.anotherObj = anotherObj;
@@ -48,6 +52,7 @@ public class Test : ISerializable
     public void Write(Writer writer)
     {
         writer.Write("position", position.x, position.y);
+        writer.Write("otherPos", new PrimitiveCombiner(8).Combine(x).Combine(y).ToLong());
         writer.Write("whatever", whatever);
         writer.Write("anotherObj", anotherObj);
         writer.Write("test0", test0);
@@ -98,12 +103,20 @@ internal class Program
             //writer.SetNameLength(5);
             //byte[] data = new byte[64];
             //data[0] = 1;
-            Test nested1 = new Test(new Vector2i(-18, 500), new Tribyte(), -1, null);
+            /*Test nested1 = new Test(new Vector2i(-18, 500), new Tribyte(), -1, null);
             Test nested0 = new Test(new Vector2i(), new Tribyte(10), 0, nested1);
             Test test = new Test(new Vector2i(10, 5), new Tribyte(57), -1, nested0);
-            writer.Write("Root0", test);
+            writer.Write("Root0", test);*/
             //writer.Write("Root1", new Test0(10, new Test0(5, null)));
+
+            //int[] test = new int[5] { 10, 8, 154, 320, -1 };
+            int[][] test = new int[4][] { new int[1] { 10 }, new int[3] { 8, -1, 87 }, new int[1] { 154 }, new int[2] { 320, 97845 } };
+            writer.WriteArray("RootArray", test);
         }
+
+        ulong value = new PrimitiveCombiner(8).Combine(10).Combine(5).ToLong();
+        new PrimitiveExtractor(value).Extract(out int x).Extract(out int y);
+        Console.WriteLine("Test: " + value + " => (" + x + ", " + y + ")");
 
         /*using(TextWriter writer = (TextWriter)new StreamWriter(File.OpenWrite(path + "/code.cs")))
         {

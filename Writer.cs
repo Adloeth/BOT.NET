@@ -20,6 +20,7 @@ namespace FFF
 
         public void Dispose()
         {
+            fffWriterFlush(nativeWriter);
             fffWriterFree(nativeWriter);
         }
 
@@ -45,44 +46,107 @@ namespace FFF
             fffWriterObjectEnd(nativeWriter);
         }
 
-        public void Write(string fieldName, bool data) => fffWriterWriteBool(nativeWriter, fieldName, data);
+        private void CheckValid()
+        {
+            if(!nameLengthSet) throw new Exception("Name length option was enabled but you didn't call SetNameLength() to set it before writting.");
+        }
 
-        public void Write(string fieldName, byte data) => fffWriterWrite8(nativeWriter, fieldName, data);
-        public void Write(string fieldName, sbyte data) => fffWriterWrite8(nativeWriter, fieldName, (byte)data);
+        public void Write(string fieldName, bool      data) { CheckValid(); fffWriterWriteBool(nativeWriter, fieldName, data); }
 
-        public void Write(string fieldName, ushort data) => fffWriterWrite16(nativeWriter, fieldName, data);
-        public void Write(string fieldName, short data) => fffWriterWrite16(nativeWriter, fieldName, (ushort)data);
+        public void Write(string fieldName, byte      data) { CheckValid(); fffWriterWrite8(nativeWriter, fieldName, data); }
+        public void Write(string fieldName, sbyte     data) { CheckValid(); fffWriterWrite8(nativeWriter, fieldName, (byte)data); }
 
-        public void Write(string fieldName, Tribyte data) => fffWriterWrite24(nativeWriter, fieldName, data.GetBytes());
+        public void Write(string fieldName, ushort    data) { CheckValid(); fffWriterWrite16(nativeWriter, fieldName, data); }
+        public void Write(string fieldName, short     data) { CheckValid(); fffWriterWrite16(nativeWriter, fieldName, (ushort)data); }
 
-        public void Write(string fieldName, uint data) => fffWriterWrite32(nativeWriter, fieldName, data);
-        public void Write(string fieldName, int data) => fffWriterWrite32(nativeWriter, fieldName, (uint)data);
-        public void Write(string fieldName, float data) => fffWriterWriteFloat(nativeWriter, fieldName, data);
+        public void Write(string fieldName, Tribyte   data) { CheckValid(); fffWriterWrite24(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, Pentabyte data) => fffWriterWrite40(nativeWriter, fieldName, data.GetBytes());
+        public void Write(string fieldName, uint      data) { CheckValid(); fffWriterWrite32(nativeWriter, fieldName, data); }
+        public void Write(string fieldName, int       data) { CheckValid(); fffWriterWrite32(nativeWriter, fieldName, (uint)data); }
+        public void Write(string fieldName, float     data) { CheckValid(); fffWriterWriteFloat(nativeWriter, fieldName, data); }
 
-        public void Write(string fieldName, Hexabyte data) => fffWriterWrite48(nativeWriter, fieldName, data.GetBytes());
+        public void Write(string fieldName, Pentabyte data) { CheckValid(); fffWriterWrite40(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, Heptabyte data) => fffWriterWrite56(nativeWriter, fieldName, data.GetBytes());
+        public void Write(string fieldName, Hexabyte  data) { CheckValid(); fffWriterWrite48(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, ulong data) => fffWriterWrite64(nativeWriter, fieldName, data);
-        public void Write(string fieldName, long data) => fffWriterWrite64(nativeWriter, fieldName, (ulong)data);
-        public void Write(string fieldName, double data) => fffWriterWriteDouble(nativeWriter, fieldName, data);
+        public void Write(string fieldName, Heptabyte data) { CheckValid(); fffWriterWrite56(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, LargeInt data) => fffWriterWrite96(nativeWriter, fieldName, data.GetBytes());
+        public void Write(string fieldName, ulong     data) { CheckValid(); fffWriterWrite64(nativeWriter, fieldName, data); }
+        public void Write(string fieldName, long      data) { CheckValid(); fffWriterWrite64(nativeWriter, fieldName, (ulong)data); }
+        public void Write(string fieldName, double    data) { CheckValid(); fffWriterWriteDouble(nativeWriter, fieldName, data); }
+ 
+        public void Write(string fieldName, LargeInt  data) { CheckValid(); fffWriterWrite96(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, BigInt data) => fffWriterWrite128(nativeWriter, fieldName, data.GetBytes());
+        public void Write(string fieldName, BigInt    data) { CheckValid(); fffWriterWrite128(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, GreatInt data) => fffWriterWrite192(nativeWriter, fieldName, data.GetBytes());
+        public void Write(string fieldName, GreatInt  data) { CheckValid(); fffWriterWrite192(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, HugeInt data) => fffWriterWrite256(nativeWriter, fieldName, data.GetBytes());
+        public void Write(string fieldName, HugeInt   data) { CheckValid(); fffWriterWrite256(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, GiantInt data) => fffWriterWrite512(nativeWriter, fieldName, data.GetBytes());
+        public void Write(string fieldName, GiantInt  data) { CheckValid(); fffWriterWrite512(nativeWriter, fieldName, data.GetBytes()); }
+
+        private ulong GetCollectionOfCollectionMaxSize(ICollection collection)
+        {
+            int maxSize = 0;
+
+            foreach(ICollection? item in collection)
+                if(item != null && maxSize < item.Count)
+                    maxSize = item.Count;
+                
+            return (ulong)maxSize;
+        }
+
+        private void GetArrayElements(System.Type? elementType, ICollection collection, List<Type> elementTypes)
+        {
+            if(elementType == null)
+                throw new Exception("Somehow the element type of the collection is 'null'.");
+
+            //Dictionaries implements ICollection so IDictionary need to be tested first
+            if(typeof(IDictionary).IsAssignableFrom(elementType))
+            {
+                
+            }
+            //Blobs are collections of bytes
+            else if(typeof(ICollection<byte>).IsAssignableFrom(elementType) || typeof(ICollection<sbyte>).IsAssignableFrom(elementType))
+            {
+                elementTypes.Add(Standard.GetCollectionType(Collection.Blob, Size.Auto, GetCollectionOfCollectionMaxSize((ICollection)collection)));
+            }
+            //Arrays
+            else if(typeof(ICollection).IsAssignableFrom(elementType))
+            {
+                elementTypes.Add(Standard.GetCollectionType(Collection.Array, Size.Auto, GetCollectionOfCollectionMaxSize((ICollection)collection)));
+                IEnumerator enumerator = collection.GetEnumerator();
+                enumerator.MoveNext();
+                GetArrayElements(elementType.GetElementType(), (ICollection)enumerator.Current, elementTypes);
+            }
+            //Primitive type or object
+            else
+            {
+                elementTypes.Add(Standard.CSTypeToPrimitive(elementType));
+            }
+        }
 
         public void WriteArray<T>(string fieldName, ICollection<T> collection, Size size = Size.Auto)
         {
             if(collection == null)
                 return;
+
+            List<Type> elementTypes = new List<Type>();
+            GetArrayElements(typeof(T), (ICollection)collection, elementTypes);
+
+            Console.WriteLine(elementTypes.Count);
+
+            if(elementTypes.Count == 0)
+                return;
+
+            for(int i = 0; i < elementTypes.Count; i++)
+                Console.Write(string.Concat(i > 0 ? ", " : "", elementTypes[i]));
+            Console.WriteLine("");
+
+            if(Standard.IsCollection(elementTypes[elementTypes.Count - 1]))
+                return;
+
+            Console.WriteLine("All good !");
 
             switch(size)
             {
@@ -97,18 +161,33 @@ namespace FFF
                 case Size.Huge:   fffWriterInitHugeArray  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
                 default: throw new Exception("Invalid size for writting an array !");
             }
-            
-            if(typeof(T) == typeof(IDictionary))
+
+            fffWriterWriteCollectionElementTypes(nativeWriter, (byte[])(Array)elementTypes.ToArray(), (uint)elementTypes.Count);
+            fffWriterWriteCollectionCount(nativeWriter, (ulong)collection.LongCount());
+            RecursiveArrayPush((ICollection)collection, elementTypes, 0);
+        }
+
+        private void RecursiveArrayPush(ICollection collection, List<Type> elementTypes, int depth)
+        {
+            Type currentType = elementTypes[depth];
+
+            if(Standard.IsArray(currentType))
+            {
+                fffWriterPushCollectionDimension(nativeWriter, (ulong)collection.Count, (byte)Standard.SizeFromCollection(currentType));
+                foreach(object? obj in collection)
+                    RecursiveArrayPush((ICollection)obj, elementTypes, depth + 1);
+            }
+            else if(Standard.IsDictionary(currentType))
             {
 
             }
-            else if(typeof(T) == typeof(ICollection))
+            else if(Standard.IsBlob(currentType))
             {
 
             }
             else
             {
-
+                //fffWriterPushArrayElements(nativeWriter, (Array)collection, collection.Count);
             }
         }
 
@@ -183,6 +262,8 @@ namespace FFF
         [DllImport("libFFF.so")] static private extern void fffWriterWriteCollectionElementType(IntPtr writer, byte fffType);
         [DllImport("libFFF.so")] static private extern void fffWriterWriteCollectionElementTypes(IntPtr writer, byte[] fffTypes, uint length);
         [DllImport("libFFF.so")] static private extern void fffWriterWriteCollectionCount(IntPtr writer, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushCollectionDimension(IntPtr writer, ulong count, byte size);
+        
 
         [DllImport("libFFF.so")] static private extern void fffWriterInitAutoArray(IntPtr writer, string fieldName, ulong count);
         [DllImport("libFFF.so")] static private extern void fffWriterInitTinyArray(IntPtr writer, string fieldName, ulong count);
