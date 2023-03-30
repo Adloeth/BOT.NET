@@ -145,10 +145,12 @@ namespace FFF
             if(type == typeof(ushort) || type == typeof(short)) return Type.Short;
             if(type == typeof(Tribyte))                         return Type.Tribyte;
             if(type == typeof(uint) || type == typeof(int))     return Type.Int;
+            if(type == typeof(float))                           return Type.Int;
             if(type == typeof(Pentabyte))                       return Type.Pentabyte;
             if(type == typeof(Hexabyte))                        return Type.Hexabyte;
             if(type == typeof(Heptabyte))                       return Type.Heptabyte;
             if(type == typeof(ulong) || type == typeof(long))   return Type.Long;
+            if(type == typeof(double))                          return Type.Long;
             if(type == typeof(LargeInt))                        return Type.Large;
             if(type == typeof(BigInt))                          return Type.Big;
             if(type == typeof(GreatInt))                        return Type.Great;

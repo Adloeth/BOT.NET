@@ -167,13 +167,50 @@ namespace FFF
             RecursiveArrayPush((ICollection)collection, elementTypes, 0);
         }
 
+        private void PushArrayElements(Type type, Array array)
+        {
+            switch(type)
+            {
+                case Type.Bool     : fffWriterPushArrayElementsBool(nativeWriter,                        (      bool[])array , (uint)array.Length); break;
+                case Type.Byte     : fffWriterPushArrayElements8   (nativeWriter,                        (      byte[])array , (uint)array.Length); break;
+                case Type.Short    : fffWriterPushArrayElements16  (nativeWriter,                        (    ushort[])array , (uint)array.Length); break;
+                case Type.Tribyte  : fffWriterPushArrayElements24  (nativeWriter,   Tribyte.GetBytesArray((  Tribyte[])array), (uint)array.Length); break;
+                case Type.Pentabyte: fffWriterPushArrayElements40  (nativeWriter, Pentabyte.GetBytesArray((Pentabyte[])array), (uint)array.Length); break;
+                case Type.Hexabyte : fffWriterPushArrayElements48  (nativeWriter,  Hexabyte.GetBytesArray(( Hexabyte[])array), (uint)array.Length); break;
+                case Type.Heptabyte: fffWriterPushArrayElements56  (nativeWriter, Heptabyte.GetBytesArray((Heptabyte[])array), (uint)array.Length); break;
+                case Type.Large    : fffWriterPushArrayElements96  (nativeWriter,  LargeInt.GetBytesArray(( LargeInt[])array), (uint)array.Length); break;
+                case Type.Big      : fffWriterPushArrayElements128 (nativeWriter,    BigInt.GetBytesArray(( BigInt  [])array), (uint)array.Length); break;
+                case Type.Great    : fffWriterPushArrayElements192 (nativeWriter,  GreatInt.GetBytesArray(( GreatInt[])array), (uint)array.Length); break;
+                case Type.Huge     : fffWriterPushArrayElements256 (nativeWriter,   HugeInt.GetBytesArray(( HugeInt [])array), (uint)array.Length); break;
+                case Type.Giant    : fffWriterPushArrayElements512 (nativeWriter,  GiantInt.GetBytesArray(( GiantInt[])array), (uint)array.Length); break;
+
+                case Type.Int      : 
+                    if(array.GetType() == typeof(float[]))
+                        fffWriterPushArrayElementsFloat (nativeWriter, (float[])array, (uint)array.Length);
+                    else 
+                        fffWriterPushArrayElements32    (nativeWriter, ( uint[])array, (uint)array.Length); 
+                    break;
+                case Type.Long     : 
+                    if(array.GetType() == typeof(double[]))
+                        fffWriterPushArrayElementsDouble(nativeWriter, (double[])array, (uint)array.Length);
+                    else 
+                        fffWriterPushArrayElements64    (nativeWriter, ( ulong[])array, (uint)array.Length); break;
+
+                default: throw new Exception("Cannot push array elements, '" + type + "' cannot be translated to a primitive type !");
+            }
+        }
+
         private void RecursiveArrayPush(ICollection collection, List<Type> elementTypes, int depth)
         {
             Type currentType = elementTypes[depth];
 
+            Console.WriteLine(currentType);
+
             if(Standard.IsArray(currentType))
             {
-                fffWriterPushCollectionDimension(nativeWriter, (ulong)collection.Count, (byte)Standard.SizeFromCollection(currentType));
+                if(depth > 0)
+                    fffWriterPushCollectionDimension(nativeWriter, (ulong)collection.Count, (byte)Standard.SizeFromCollection(currentType));
+                
                 foreach(object? obj in collection)
                     RecursiveArrayPush((ICollection)obj, elementTypes, depth + 1);
             }
@@ -187,7 +224,10 @@ namespace FFF
             }
             else
             {
-                //fffWriterPushArrayElements(nativeWriter, (Array)collection, collection.Count);
+                if(depth > 0)
+                    fffWriterPushCollectionDimension(nativeWriter, (ulong)collection.Count, (byte)Standard.SizeFromCollection(elementTypes[depth - 1]));
+                
+                PushArrayElements(currentType, (Array)collection);
             }
         }
 
@@ -294,6 +334,24 @@ namespace FFF
         [DllImport("libFFF.so")] static private extern void fffWriterInitBigBlob(IntPtr writer, string fieldName, ulong count);
         [DllImport("libFFF.so")] static private extern void fffWriterInitGreatBlob(IntPtr writer, string fieldName, ulong count);
         [DllImport("libFFF.so")] static private extern void fffWriterInitHugeBlob(IntPtr writer, string fieldName, ulong count);
+
+
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElementsBool(IntPtr writer, bool[] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements8(IntPtr writer, byte[] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements16(IntPtr writer, ushort[] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements24(IntPtr writer, byte[][] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements32(IntPtr writer, uint[] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElementsFloat(IntPtr writer, float[] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements40(IntPtr writer, byte[][] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements48(IntPtr writer, byte[][] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements56(IntPtr writer, byte[][] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements64(IntPtr writer, ulong[] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElementsDouble(IntPtr writer, double[] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements96(IntPtr writer, byte[][] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements128(IntPtr writer,byte[][] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements192(IntPtr writer,byte[][] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements256(IntPtr writer,byte[][] data, ulong count);
+        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements512(IntPtr writer,byte[][] data, ulong count);
     
 #endregion
     }

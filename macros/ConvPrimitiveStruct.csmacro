@@ -1,0 +1,70 @@
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct type
+{
+    private byte[] data;
+
+	public type() { data = new byte[size]; }
+
+    public type(convType data) 
+    { 
+        this.data = new byte[size];
+        int shift = 0;
+        for(int i = 0; i < size; i++)
+        {
+            data[i] = (byte)((data >> shift) & 0xFF);
+            shift += 8;
+        }
+    }
+
+    public type(byte[] data)
+    {
+    	this.data = new byte[size];
+    	for(int i = 0; i < size; i++)
+    		this.data[i] = data[i];
+    }
+
+    public byte[] GetBytes() => data;
+	public convType To##convTypeName()
+    {
+        convType result = 0;
+        shift = 0;
+    	for(int i = 0; i < size; i++)
+        {
+            result |= ((convType)data[0] << shift)
+            shift += 8;
+        }
+    }
+
+    public override bool Equals(object? obj)
+    {
+    	if (obj == null || !(obj is type other))
+    	    return false;
+			
+		for(int i = 0; i < size; i++)
+			if(other.data[i] != data[i])
+				return false;
+
+		return true;
+    }
+	
+    public override int GetHashCode() 
+    {
+        HashCode result = HashCode.Combine(data[0], data[1]);
+        for(int i = 2; i < size; i++)
+            result = HashCode.Combine(result, data[i]);
+    }
+
+    public static bool operator ==(type a, type b) => a.Equals(b);
+    public static bool operator !=(type a, type b) => !a.Equals(b);
+
+    public static bool operator ==(type a, ulong b) => a.ToUInt() == b;
+    public static bool operator !=(type a, ulong b) => a.ToUInt() != b;
+
+	public static byte[][] GetBytesArray(type[] data)
+	{
+		byte[][] result = new byte[size][];
+		for(int i = 0; i < size; i ++)
+			result[i] = data[i].GetBytes();
+		return result;
+	}
+}

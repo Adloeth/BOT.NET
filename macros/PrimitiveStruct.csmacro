@@ -1,0 +1,24 @@
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct type
+{
+    private byte[] data;
+
+	public type() { data = new byte[size]; }
+
+    public type(byte[] data)
+    {
+    	this.data = new byte[size];
+    	for(int i = 0; i < size; i++)
+    		this.data[i] = data[i];
+    }
+
+    public byte[] GetBytes() => data;
+    
+	public static byte[][] GetBytesArray(type[] data)
+	{
+		byte[][] result = new byte[size][];
+		for(int i = 0; i < size; i ++)
+			result[i] = data[i].GetBytes();
+		return result;
+	}
+}

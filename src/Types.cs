@@ -3,6 +3,118 @@ using System.Numerics;
 
 namespace FFF
 {
+	public struct Primitive
+	{
+		private object variant;
+
+		private Primitive(object variant) { this.variant = variant; }
+
+		public Primitive(bool value) : this((object)value) { }
+
+		public Primitive( byte value) : this((object)value) { }
+		public Primitive(sbyte value) : this((object)value) { }
+
+		public Primitive(ushort value) : this((object)value) { }
+		public Primitive( short value) : this((object)value) { }
+		public Primitive(  Half value) : this((object)value) { }
+
+		public Primitive(Tribyte value) : this((object)value) { }
+
+		public Primitive( uint value) : this((object)value) { }
+		public Primitive(  int value) : this((object)value) { }
+		public Primitive(float value) : this((object)value) { }
+
+		public Primitive(Pentabyte value) : this((object)value) { }
+
+		public Primitive(Hexabyte value) : this((object)value) { }
+
+		public Primitive(Heptabyte value) : this((object)value) { }
+
+		public Primitive( ulong value) : this((object)value) { }
+		public Primitive(  long value) : this((object)value) { }
+		public Primitive(double value) : this((object)value) { }
+
+		public Primitive(LargeInt value) : this((object)value) { }
+
+		public Primitive(BigInt value) : this((object)value) { }
+
+		public Primitive(GreatInt value) : this((object)value) { }
+
+		public Primitive(HugeInt value) : this((object)value) { }
+
+		public Primitive(GiantInt value) : this((object)value) { }
+
+		public bool Is<T>() => typeof(T) == variant.GetType();
+
+		public T As<T>() => Is<T>() ? (T)variant : throw new Exception(string.Concat("Cannot convert primitive variant to ", typeof(T).FullName, " the primitive type is ", variant.GetType().FullName));
+
+/*
+#macro decl PRIMITIVE_IMPLICIT_OPERATOR(type)
+	public static implicit operator Primitive(type value) => new Primitive(value);
+#macro end
+*/
+
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(bool     )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(byte     )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(sbyte    )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(ushort   )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(short    )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(Half     )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(Tribyte  )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(uint     )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(int      )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(float    )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(Pentabyte)
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(Hexabyte )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(Heptabyte)
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(ulong    )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(long     )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(double   )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(LargeInt )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(BigInt   )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(GreatInt )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(HugeInt  )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(GiantInt )
+
+/*
+#macro decl PRIMITIVE_EXPLICIT_OPERATOR(type)
+	public static explicit operator type(Primitive variant) => (type)variant.value;
+#macro end
+*/
+
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(bool     )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(byte     )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(sbyte    )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(ushort   )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(short    )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(Half     )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(Tribyte  )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(uint     )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(int      )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(float    )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(Pentabyte)
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(Hexabyte )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(Heptabyte)
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(ulong    )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(long     )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(double   )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(LargeInt )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(BigInt   )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(GreatInt )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(HugeInt  )
+		//#macro use PRIMITIVE_IMPLICIT_OPERATOR(GiantInt )
+	}
+
+/*
+#macro decl CONV_PRIMITIVE_STRUCT(type, size, convType, convTypeName)
+#macro import macros/ConvPrimitiveStruct.csmacro
+#macro end
+
+#macro decl PRIMITIVE_STRUCT(type, size)
+#macro import macros/PrimitiveStruct.csmacro
+#macro end
+*/
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Tribyte
     {
@@ -47,6 +159,14 @@ namespace FFF
 
     	public static bool operator ==(Tribyte a, ulong b) => a.ToUInt() == b;
     	public static bool operator !=(Tribyte a, ulong b) => a.ToUInt() != b;
+
+		public static byte[][] GetBytesArray(Tribyte[] data)
+		{
+			byte[][] result = new byte[data.Length][];
+			for(int i = 0; i < data.Length; i ++)
+				result[i] = data[i].GetBytes();
+			return result;
+		}
     }
 
 
@@ -94,6 +214,14 @@ namespace FFF
 
     	public static bool operator ==(Pentabyte a, ulong b) => a.ToUlong() == b;
     	public static bool operator !=(Pentabyte a, ulong b) => a.ToUlong() != b;
+
+		public static byte[][] GetBytesArray(Pentabyte[] data)
+		{
+			byte[][] result = new byte[data.Length][];
+			for(int i = 0; i < data.Length; i ++)
+				result[i] = data[i].GetBytes();
+			return result;
+		}
     }
 
 
@@ -141,6 +269,14 @@ namespace FFF
 
     	public static bool operator ==(Hexabyte a, ulong b) => a.ToUlong() == b;
     	public static bool operator !=(Hexabyte a, ulong b) => a.ToUlong() != b;
+
+		public static byte[][] GetBytesArray(Hexabyte[] data)
+		{
+			byte[][] result = new byte[data.Length][];
+			for(int i = 0; i < data.Length; i ++)
+				result[i] = data[i].GetBytes();
+			return result;
+		}
     }
 
 
@@ -188,6 +324,14 @@ namespace FFF
 
     	public static bool operator ==(Heptabyte a, ulong b) => a.ToUlong() == b;
     	public static bool operator !=(Heptabyte a, ulong b) => a.ToUlong() != b;
+
+		public static byte[][] GetBytesArray(Heptabyte[] data)
+		{
+			byte[][] result = new byte[data.Length][];
+			for(int i = 0; i < data.Length; i ++)
+				result[i] = data[i].GetBytes();
+			return result;
+		}
     }
 
 
@@ -211,6 +355,14 @@ namespace FFF
     	}
 
     	public byte[] GetBytes() => data;
+
+		public static byte[][] GetBytesArray(LargeInt[] data)
+		{
+			byte[][] result = new byte[data.Length][];
+			for(int i = 0; i < data.Length; i ++)
+				result[i] = data[i].GetBytes();
+			return result;
+		}
     }
 
 
@@ -237,6 +389,14 @@ namespace FFF
 
 		public static implicit operator BigInt(BigInteger data) => new BigInt(data.ToByteArray());
 		public static explicit operator BigInteger(BigInt data) => new BigInteger(data.GetBytes());
+
+		public static byte[][] GetBytesArray(BigInt[] data)
+		{
+			byte[][] result = new byte[data.Length][];
+			for(int i = 0; i < data.Length; i ++)
+				result[i] = data[i].GetBytes();
+			return result;
+		}
     }
 
 
@@ -260,6 +420,14 @@ namespace FFF
     	}
 
     	public byte[] GetBytes() => data;
+
+		public static byte[][] GetBytesArray(GreatInt[] data)
+		{
+			byte[][] result = new byte[data.Length][];
+			for(int i = 0; i < data.Length; i ++)
+				result[i] = data[i].GetBytes();
+			return result;
+		}
     }
 
 
@@ -283,6 +451,14 @@ namespace FFF
     	}
 
     	public byte[] GetBytes() => data;
+
+		public static byte[][] GetBytesArray(HugeInt[] data)
+		{
+			byte[][] result = new byte[data.Length][];
+			for(int i = 0; i < data.Length; i ++)
+				result[i] = data[i].GetBytes();
+			return result;
+		}
     }
 
 
@@ -306,5 +482,13 @@ namespace FFF
     	}
 
     	public byte[] GetBytes() => data;
+
+		public static byte[][] GetBytesArray(GiantInt[] data)
+		{
+			byte[][] result = new byte[data.Length][];
+			for(int i = 0; i < data.Length; i ++)
+				result[i] = data[i].GetBytes();
+			return result;
+		}
     }
 }
