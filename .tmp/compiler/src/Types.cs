@@ -106,8 +106,12 @@ namespace FFF
 	}
 
 /*
+#macro decl CONV_PRIMITIVE_STRUCT(type, size, convType, convTypeName)
+#macro import macros/ConvPrimitiveStruct.macro
+#macro end
+
 #macro decl PRIMITIVE_STRUCT(type, size)
-#macro import macros/PrimitiveStruct.cs.macro
+#macro import macros/PrimitiveStruct.macro
 #macro end
 */
 
@@ -487,4 +491,4 @@ namespace FFF
 			return result;
 		}
     }
-}
+}	public static implicit operator Primitive(bool value) => new Primitive(value);
