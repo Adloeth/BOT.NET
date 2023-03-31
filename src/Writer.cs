@@ -36,6 +36,15 @@ namespace FFF
 
         public void Flush() => fffWriterFlush(nativeWriter);
 
+
+        public void Write(string fieldName, IPrimitive obj)
+        {
+            if(obj == null)
+                return;
+
+            Write(fieldName, obj.AsPrimitive());
+        }
+
         public void Write(string fieldName, ISerializable obj)
         {
             if(obj == null || obj.IsDefault)

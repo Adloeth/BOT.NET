@@ -7,6 +7,7 @@ namespace FFF
 	{
 		private object variant;
 
+		public Primitive() { this.variant = 0; }
 		private Primitive(object variant) { this.variant = variant; }
 
 /*
@@ -49,6 +50,69 @@ namespace FFF
 		public bool Is<T>() => typeof(T) == variant.GetType();
 
 		public T As<T>() => Is<T>() ? (T)variant : throw new Exception(string.Concat("Cannot convert primitive variant to ", typeof(T).FullName, " the primitive type is ", variant.GetType().FullName));
+
+		public static bool IsPrimitive(System.Type type)
+		{
+			/*#macro decl IS_PRIMITIVE(primType)
+				|| type == typeof(primType)
+			#macro end*/
+
+			return type == typeof(bool)
+			//#macro use IS_PRIMITIVE(     byte)
+			//#macro use IS_PRIMITIVE(    sbyte)
+			//#macro use IS_PRIMITIVE(    short)
+			//#macro use IS_PRIMITIVE(   ushort)
+			//#macro use IS_PRIMITIVE(     Half)
+			//#macro use IS_PRIMITIVE(  Tribyte)
+			//#macro use IS_PRIMITIVE(      int)
+			//#macro use IS_PRIMITIVE(     uint)
+			//#macro use IS_PRIMITIVE(    float)
+			//#macro use IS_PRIMITIVE(Pentabyte)
+			//#macro use IS_PRIMITIVE( Hexabyte)
+			//#macro use IS_PRIMITIVE(Heptabyte)
+			//#macro use IS_PRIMITIVE(     long)
+			//#macro use IS_PRIMITIVE(    ulong)
+			//#macro use IS_PRIMITIVE(   double)
+			//#macro use IS_PRIMITIVE( LargeInt)
+			//#macro use IS_PRIMITIVE(   BigInt)
+			//#macro use IS_PRIMITIVE( GreatInt)
+			//#macro use IS_PRIMITIVE(  HugeInt)
+			//#macro use IS_PRIMITIVE( GiantInt)
+			;
+		}
+
+		public bool IsDefault()
+		{
+			/*#macro decl IS_CS_PRIMITIVE_DEFAULT(primType)
+				if(Is<primType>()) return As<primType>() == (primType)0;
+			#macro end*/
+			/*#macro decl IS_CU_PRIMITIVE_DEFAULT(primType)
+				if(Is<primType>()) return As<primType>().IsDefault();
+			#macro end*/
+
+			if(Is<bool>()) return !As<bool>();
+			//#macro use IS_CS_PRIMITIVE_DEFAULT(     byte)
+			//#macro use IS_CS_PRIMITIVE_DEFAULT(    sbyte)
+			//#macro use IS_CS_PRIMITIVE_DEFAULT(    short)
+			//#macro use IS_CS_PRIMITIVE_DEFAULT(   ushort)
+			//#macro use IS_CS_PRIMITIVE_DEFAULT(     Half)
+			//#macro use IS_CU_PRIMITIVE_DEFAULT(  Tribyte)
+			//#macro use IS_CS_PRIMITIVE_DEFAULT(      int)
+			//#macro use IS_CS_PRIMITIVE_DEFAULT(     uint)
+			//#macro use IS_CS_PRIMITIVE_DEFAULT(    float)
+			//#macro use IS_CU_PRIMITIVE_DEFAULT(Pentabyte)
+			//#macro use IS_CU_PRIMITIVE_DEFAULT( Hexabyte)
+			//#macro use IS_CU_PRIMITIVE_DEFAULT(Heptabyte)
+			//#macro use IS_CS_PRIMITIVE_DEFAULT(     long)
+			//#macro use IS_CS_PRIMITIVE_DEFAULT(    ulong)
+			//#macro use IS_CS_PRIMITIVE_DEFAULT(   double)
+			//#macro use IS_CU_PRIMITIVE_DEFAULT( LargeInt)
+			//#macro use IS_CU_PRIMITIVE_DEFAULT(   BigInt)
+			//#macro use IS_CU_PRIMITIVE_DEFAULT( GreatInt)
+			//#macro use IS_CU_PRIMITIVE_DEFAULT(  HugeInt)
+			//#macro use IS_CU_PRIMITIVE_DEFAULT( GiantInt)
+			throw new Exception("Invalid primitive type");
+		}
 
 /*
 #macro decl PRIMITIVE_IMPLICIT_OPERATOR(type)

@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Json;
 
 namespace FFF;
 
-public struct Vector2i
+public struct Vector2i : IPrimitive
 {
     public int x;
     public int y;
@@ -28,6 +28,11 @@ public struct Vector2i
     public static bool operator ==(Vector2i a, Vector2i b) => a.Equals(b);
     public static bool operator !=(Vector2i a, Vector2i b) => !a.Equals(b);
 
+    public Primitive AsPrimitive()
+    {
+        PrimitiveCombiner combiner = new PrimitiveCombiner(8);
+        return new Primitive(combiner.Combine(x).Combine(y).ToLong());
+    }
 }
 
 public class Test : ISerializable
@@ -111,6 +116,7 @@ internal class Program
             //writer.Write("Root1", new Test0(10, new Test0(5, null)));
 
             //int[] test = new int[5] { 10, 8, 154, 320, -1 };
+            writer.Write("RootVector", new Vector2i(10, 5));
             int[][] test = new int[4][] { new int[1] { 10 }, new int[3] { 8, -1, 87 }, new int[1] { 154 }, new int[2] { 320, 97845 } };
             writer.WriteArray("RootArray", test);
         }

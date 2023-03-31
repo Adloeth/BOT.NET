@@ -138,7 +138,7 @@ namespace FFF
 
         public static Type CSTypeToPrimitive(System.Type type)
         {
-            if(typeof(ISerializedAs).IsAssignableFrom(type))    return (Type)type.GetMethod("SerializedAsType").Invoke(null, null);
+            if(typeof(IPrimitive).IsAssignableFrom(type))       return (Type)type.GetMethod("AsPrimitive").Invoke(null, null);
             if(typeof(ISerializable).IsAssignableFrom(type))    return Type.Object;
             if(type == typeof(bool))                            return Type.Bool;
             if(type == typeof(byte) || type == typeof(sbyte))   return Type.Byte;
