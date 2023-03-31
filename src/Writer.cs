@@ -51,6 +51,46 @@ namespace FFF
             if(!nameLengthSet) throw new Exception("Name length option was enabled but you didn't call SetNameLength() to set it before writting.");
         }
 
+        public void Write(string fieldName, Primitive variant)
+        {
+            if(variant.Is<bool>()) Write(fieldName, variant.As<bool>());
+            /*#macro decl WRITER_WRITE_VARIANT(type)
+            else if(variant.Is<type>()) Write(fieldName, variant.As<type>());
+            #macro end*/
+            //#macro use WRITER_WRITE_VARIANT(     byte)
+            //#macro use WRITER_WRITE_VARIANT(    sbyte)
+
+            //#macro use WRITER_WRITE_VARIANT(   ushort)
+            //#macro use WRITER_WRITE_VARIANT(    short)
+            //#macro use WRITER_WRITE_VARIANT(     Half)
+
+            //#macro use WRITER_WRITE_VARIANT(  Tribyte)
+
+            //#macro use WRITER_WRITE_VARIANT(     uint)
+            //#macro use WRITER_WRITE_VARIANT(      int)
+            //#macro use WRITER_WRITE_VARIANT(    float)
+
+            //#macro use WRITER_WRITE_VARIANT(Pentabyte)
+
+            //#macro use WRITER_WRITE_VARIANT( Hexabyte)
+
+            //#macro use WRITER_WRITE_VARIANT(Heptabyte)
+
+            //#macro use WRITER_WRITE_VARIANT(    ulong)
+            //#macro use WRITER_WRITE_VARIANT(     long)
+            //#macro use WRITER_WRITE_VARIANT(   double)
+
+            //#macro use WRITER_WRITE_VARIANT( LargeInt)
+
+            //#macro use WRITER_WRITE_VARIANT(   BigInt)
+
+            //#macro use WRITER_WRITE_VARIANT( GreatInt)
+
+            //#macro use WRITER_WRITE_VARIANT(  HugeInt)
+
+            //#macro use WRITER_WRITE_VARIANT( GiantInt)
+        }
+
         public void Write(string fieldName, bool      data) { CheckValid(); fffWriterWriteBool(nativeWriter, fieldName, data); }
 
         public void Write(string fieldName, byte      data) { CheckValid(); fffWriterWrite8(nativeWriter, fieldName, data); }
@@ -58,6 +98,7 @@ namespace FFF
 
         public void Write(string fieldName, ushort    data) { CheckValid(); fffWriterWrite16(nativeWriter, fieldName, data); }
         public void Write(string fieldName, short     data) { CheckValid(); fffWriterWrite16(nativeWriter, fieldName, (ushort)data); }
+        public void Write(string fieldName, Half      data) { CheckValid(); fffWriterWrite16(nativeWriter, fieldName, BitConverter.ToUInt16(BitConverter.GetBytes(data))); }
 
         public void Write(string fieldName, Tribyte   data) { CheckValid(); fffWriterWrite24(nativeWriter, fieldName, data.GetBytes()); }
 

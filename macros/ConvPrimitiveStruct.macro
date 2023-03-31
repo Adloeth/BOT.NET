@@ -1,5 +1,4 @@
 #macro header(cs)
-
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct type
 {
@@ -7,18 +6,18 @@ public struct type
 
 	public type() { data = new byte[size]; }
 
-	public type(convType data) 
+	public type(convType value) 
 	{ 
 		this.data = new byte[size];
 		int shift = 0;
 		for(int i = 0; i < size; i++)
 		{
-			data[i] = (byte)((data >> shift) & 0xFF);
+			this.data[i] = (byte)((value >> shift) & 0xFF);
 			shift += 8;
 		}
 	}
 
-	public type(byte[] data)
+	public type(params byte[] data)
 	{
 		this.data = new byte[size];
 		for(int i = 0; i < size; i++)
@@ -29,12 +28,13 @@ public struct type
 	public convType To##convTypeName()
 	{
 		convType result = 0;
-		shift = 0;
+		int shift = 0;
 		for(int i = 0; i < size; i++)
 		{
-			result |= ((convType)data[0] << shift)
+			result |= ((convType)data[0] << shift);
 			shift += 8;
 		}
+		return result;
 	}
 
 	public override bool Equals(object? obj)
@@ -51,16 +51,17 @@ public struct type
 	
 	public override int GetHashCode() 
 	{
-		HashCode result = HashCode.Combine(data[0], data[1]);
+		int result = HashCode.Combine(data[0], data[1]);
 		for(int i = 2; i < size; i++)
 			result = HashCode.Combine(result, data[i]);
+		return result;
 	}
 
 	public static bool operator ==(type a, type b) => a.Equals(b);
 	public static bool operator !=(type a, type b) => !a.Equals(b);
 
-	public static bool operator ==(type a, ulong b) => a.ToUInt() == b;
-	public static bool operator !=(type a, ulong b) => a.ToUInt() != b;
+	public static bool operator ==(type a, ulong b) => a.To##convTypeName() == b;
+	public static bool operator !=(type a, ulong b) => a.To##convTypeName() != b;
 
 	public static byte[][] GetBytesArray(type[] data)
 	{

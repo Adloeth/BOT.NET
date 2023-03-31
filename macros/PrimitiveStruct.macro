@@ -1,5 +1,4 @@
 #macro header(cs)
-
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public struct type
 {
@@ -7,7 +6,7 @@ public struct type
 
 	public type() { data = new byte[size]; }
 
-	public type(byte[] data)
+	public type(params byte[] data)
 	{
 		this.data = new byte[size];
 		for(int i = 0; i < size; i++)

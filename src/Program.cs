@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Json;
 
 namespace FFF;
 
-public struct Vector2i : ISerializedAs
+public struct Vector2i
 {
     public int x;
     public int y;
@@ -28,10 +28,6 @@ public struct Vector2i : ISerializedAs
     public static bool operator ==(Vector2i a, Vector2i b) => a.Equals(b);
     public static bool operator !=(Vector2i a, Vector2i b) => !a.Equals(b);
 
-    public void ISerializedAs.Write(FFF.Writer writer)
-    {
-        
-    }
 }
 
 public class Test : ISerializable
