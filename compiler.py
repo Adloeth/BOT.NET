@@ -30,7 +30,7 @@ def getMacro(line, path, l):
 	macroTypeMatch = re.match("^((decl)|(use)|(end)|(import)|(execute)|(header)|(implend)|(impl))\s*", macro)
 
 	if not macroTypeMatch:
-		print("Error: Invalid macro type, need to be either 'decl', 'end', 'import' or 'use' at " + l + " in " + path)
+		print("Error: Invalid macro type, need to be either 'decl', 'end', 'import', 'execute' or 'use' at " + l + " in " + path)
 		return 1, 0, 0, 0
 	
 	if macro.startswith("decl"):
