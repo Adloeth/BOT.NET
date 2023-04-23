@@ -1,4 +1,4 @@
-namespace FFF
+namespace BOT
 {
     public interface ISerializable
     {

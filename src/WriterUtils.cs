@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace FFF
+namespace BOT
 {
     public static class WriterUtils
     {

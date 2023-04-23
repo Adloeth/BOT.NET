@@ -1,14 +1,14 @@
-# FFFNet
+# BOT.NET
 
-This is a C# implementation of the FFF C++ dynamic library. You can (and should) walk on by, this is a personnal project only public to share it with my friends and colleagues *(I don't have a degree so I need to compensate, don't judge me)*.
+This is a C# implementation of the BOT C++ dynamic library. You can (and should) walk on by, this is a personnal project only public to share it with my friends and colleagues *(I don't have a degree so I need to compensate, don't judge me)*.
 
-This project was for me to learn how dynamic libraries work and to make a fast and compact serializer for my other projects (especially video games). More informations about the FFF is available on the FuziotFileFormat repository. I don't really know how optimized it is yet as I need to finish it first to start benchmarking.
+This project was for me to learn how dynamic libraries work and to make a fast and compact serializer for my other projects (especially video games). More informations about the BOT is available on the Binary Object Tree repository. I don't really know how optimized it is yet as I need to finish it first to start benchmarking.
 
-It is almost half way done : the Reader is entirely missing and the Writer wrapper is on it's way to completion but won't be as I need to get a job, it only needs the Dictionary and Blob implementations (See FFF repo).
+It is almost half way done : the Reader is entirely missing and the Writer wrapper is on it's way to completion but won't be as I need to get a job, it only needs the Dictionary and Blob implementations (See BOT repo).
 
 ## Development
 
-Because this project uses a C++ library, most methods cannot be fully generic and need both C# primitive types (byte, bool, int, etc...) and custom types added by the FFF Standard (Tribyte, Pentabyte, BigInt, etc...). This result in multiple parts of the code needing to be copy-pasted around 20 times each with slight variations in between. There is a Variant type (named `Primitive`) but checking for types through reflections every time will slow things down a lot so manually copy-pasting everything was more efficient but REALLY annoying.
+Because this project uses a C++ library, most methods cannot be fully generic and need both C# primitive types (byte, bool, int, etc...) and custom types added by the BOT Standard (Tribyte, Pentabyte, BigInt, etc...). This result in multiple parts of the code needing to be copy-pasted around 20 times each with slight variations in between. There is a Variant type (named `Primitive`) but checking for types through reflections every time will slow things down a lot so manually copy-pasting everything was more efficient but REALLY annoying.
 
 In C++ this is not a problem as we have macros. But no such concept is present in C# unfortunatly. Instead there are Visual Studio's snippets which doesn't really work here or the Source Generators which requires Roslyn and a lot of other setup I didn't want to go into (It seams too overpowered for what I am asking). Because I wanted a quick and dirty way to copy-paste templates of codes around my files, I decided to code my own "precompiler" in Python. I will definitly redo it someday... That thing is messy.
 

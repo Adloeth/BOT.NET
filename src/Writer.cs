@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Collections;
 
-namespace FFF
+namespace BOT
 {
     public class Writer : IDisposable
     {
@@ -12,29 +12,29 @@ namespace FFF
 
         public Writer(string path, Options options, byte maxDepth = 10)
         {
-            nativeWriter = fffWriterCreate(path, maxDepth);
-            fffWriterInitFile(nativeWriter, (byte)options);
+            nativeWriter = botWriterCreate(path, maxDepth);
+            botWriterInitFile(nativeWriter, (byte)options);
 
             if(!HasNameLength) nameLengthSet = true;
         }
 
         public void Dispose()
         {
-            fffWriterFlush(nativeWriter);
-            fffWriterFree(nativeWriter);
+            botWriterFlush(nativeWriter);
+            botWriterFree(nativeWriter);
         }
 
-        public bool HasNameLength => fffWriterHasNameLength(nativeWriter);
-        public bool HasFullWidth => fffWriterHasFullWidth(nativeWriter);
-        public byte FullWidth => fffWriterGetFullWidth(nativeWriter);
+        public bool HasNameLength => botWriterHasNameLength(nativeWriter);
+        public bool HasFullWidth => botWriterHasFullWidth(nativeWriter);
+        public byte FullWidth => botWriterGetFullWidth(nativeWriter);
 
         public void SetNameLength(byte nameLength)
         {
-            fffWriterSetNameLengthOption(nativeWriter, nameLength);
+            botWriterSetNameLengthOption(nativeWriter, nameLength);
             nameLengthSet = true;
         }
 
-        public void Flush() => fffWriterFlush(nativeWriter);
+        public void Flush() => botWriterFlush(nativeWriter);
 
 
         public void Write(string fieldName, IPrimitive obj)
@@ -50,9 +50,9 @@ namespace FFF
             if(obj == null || obj.IsDefault)
                 return;
 
-            fffWriterObjectBegin(nativeWriter, fieldName);
+            botWriterObjectBegin(nativeWriter, fieldName);
             obj.Write(this);
-            fffWriterObjectEnd(nativeWriter);
+            botWriterObjectEnd(nativeWriter);
         }
 
         private void CheckValid()
@@ -100,40 +100,40 @@ namespace FFF
             //#macro use WRITER_WRITE_VARIANT( GiantInt)
         }
 
-        public void Write(string fieldName, bool      data) { CheckValid(); fffWriterWriteBool(nativeWriter, fieldName, data); }
+        public void Write(string fieldName, bool      data) { CheckValid(); botWriterWriteBool(nativeWriter, fieldName, data); }
 
-        public void Write(string fieldName, byte      data) { CheckValid(); fffWriterWrite8(nativeWriter, fieldName, data); }
-        public void Write(string fieldName, sbyte     data) { CheckValid(); fffWriterWrite8(nativeWriter, fieldName, (byte)data); }
+        public void Write(string fieldName, byte      data) { CheckValid(); botWriterWrite8(nativeWriter, fieldName, data); }
+        public void Write(string fieldName, sbyte     data) { CheckValid(); botWriterWrite8(nativeWriter, fieldName, (byte)data); }
 
-        public void Write(string fieldName, ushort    data) { CheckValid(); fffWriterWrite16(nativeWriter, fieldName, data); }
-        public void Write(string fieldName, short     data) { CheckValid(); fffWriterWrite16(nativeWriter, fieldName, (ushort)data); }
-        public void Write(string fieldName, Half      data) { CheckValid(); fffWriterWrite16(nativeWriter, fieldName, BitConverter.ToUInt16(BitConverter.GetBytes(data))); }
+        public void Write(string fieldName, ushort    data) { CheckValid(); botWriterWrite16(nativeWriter, fieldName, data); }
+        public void Write(string fieldName, short     data) { CheckValid(); botWriterWrite16(nativeWriter, fieldName, (ushort)data); }
+        public void Write(string fieldName, Half      data) { CheckValid(); botWriterWrite16(nativeWriter, fieldName, BitConverter.ToUInt16(BitConverter.GetBytes(data))); }
 
-        public void Write(string fieldName, Tribyte   data) { CheckValid(); fffWriterWrite24(nativeWriter, fieldName, data.GetBytes()); }
+        public void Write(string fieldName, Tribyte   data) { CheckValid(); botWriterWrite24(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, uint      data) { CheckValid(); fffWriterWrite32(nativeWriter, fieldName, data); }
-        public void Write(string fieldName, int       data) { CheckValid(); fffWriterWrite32(nativeWriter, fieldName, (uint)data); }
-        public void Write(string fieldName, float     data) { CheckValid(); fffWriterWriteFloat(nativeWriter, fieldName, data); }
+        public void Write(string fieldName, uint      data) { CheckValid(); botWriterWrite32(nativeWriter, fieldName, data); }
+        public void Write(string fieldName, int       data) { CheckValid(); botWriterWrite32(nativeWriter, fieldName, (uint)data); }
+        public void Write(string fieldName, float     data) { CheckValid(); botWriterWriteFloat(nativeWriter, fieldName, data); }
 
-        public void Write(string fieldName, Pentabyte data) { CheckValid(); fffWriterWrite40(nativeWriter, fieldName, data.GetBytes()); }
+        public void Write(string fieldName, Pentabyte data) { CheckValid(); botWriterWrite40(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, Hexabyte  data) { CheckValid(); fffWriterWrite48(nativeWriter, fieldName, data.GetBytes()); }
+        public void Write(string fieldName, Hexabyte  data) { CheckValid(); botWriterWrite48(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, Heptabyte data) { CheckValid(); fffWriterWrite56(nativeWriter, fieldName, data.GetBytes()); }
+        public void Write(string fieldName, Heptabyte data) { CheckValid(); botWriterWrite56(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, ulong     data) { CheckValid(); fffWriterWrite64(nativeWriter, fieldName, data); }
-        public void Write(string fieldName, long      data) { CheckValid(); fffWriterWrite64(nativeWriter, fieldName, (ulong)data); }
-        public void Write(string fieldName, double    data) { CheckValid(); fffWriterWriteDouble(nativeWriter, fieldName, data); }
+        public void Write(string fieldName, ulong     data) { CheckValid(); botWriterWrite64(nativeWriter, fieldName, data); }
+        public void Write(string fieldName, long      data) { CheckValid(); botWriterWrite64(nativeWriter, fieldName, (ulong)data); }
+        public void Write(string fieldName, double    data) { CheckValid(); botWriterWriteDouble(nativeWriter, fieldName, data); }
  
-        public void Write(string fieldName, LargeInt  data) { CheckValid(); fffWriterWrite96(nativeWriter, fieldName, data.GetBytes()); }
+        public void Write(string fieldName, LargeInt  data) { CheckValid(); botWriterWrite96(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, BigInt    data) { CheckValid(); fffWriterWrite128(nativeWriter, fieldName, data.GetBytes()); }
+        public void Write(string fieldName, BigInt    data) { CheckValid(); botWriterWrite128(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, GreatInt  data) { CheckValid(); fffWriterWrite192(nativeWriter, fieldName, data.GetBytes()); }
+        public void Write(string fieldName, GreatInt  data) { CheckValid(); botWriterWrite192(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, HugeInt   data) { CheckValid(); fffWriterWrite256(nativeWriter, fieldName, data.GetBytes()); }
+        public void Write(string fieldName, HugeInt   data) { CheckValid(); botWriterWrite256(nativeWriter, fieldName, data.GetBytes()); }
 
-        public void Write(string fieldName, GiantInt  data) { CheckValid(); fffWriterWrite512(nativeWriter, fieldName, data.GetBytes()); }
+        public void Write(string fieldName, GiantInt  data) { CheckValid(); botWriterWrite512(nativeWriter, fieldName, data.GetBytes()); }
 
         private ulong GetCollectionOfCollectionMaxSize(ICollection collection)
         {
@@ -200,20 +200,20 @@ namespace FFF
 
             switch(size)
             {
-                case Size.Auto:   fffWriterInitAutoArray  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Tiny:   fffWriterInitTinyArray  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Small:  fffWriterInitSmallArray (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Short:  fffWriterInitShortArray (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Medium: fffWriterInitMediumArray(nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Large:  fffWriterInitLargeArray (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Big:    fffWriterInitBigArray   (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Great:  fffWriterInitGreatArray (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Huge:   fffWriterInitHugeArray  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Auto:   botWriterInitAutoArray  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Tiny:   botWriterInitTinyArray  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Small:  botWriterInitSmallArray (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Short:  botWriterInitShortArray (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Medium: botWriterInitMediumArray(nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Large:  botWriterInitLargeArray (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Big:    botWriterInitBigArray   (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Great:  botWriterInitGreatArray (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Huge:   botWriterInitHugeArray  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
                 default: throw new Exception("Invalid size for writting an array !");
             }
 
-            fffWriterWriteCollectionElementTypes(nativeWriter, (byte[])(Array)elementTypes.ToArray(), (uint)elementTypes.Count);
-            fffWriterWriteCollectionCount(nativeWriter, (ulong)collection.LongCount());
+            botWriterWriteCollectionElementTypes(nativeWriter, (byte[])(Array)elementTypes.ToArray(), (uint)elementTypes.Count);
+            botWriterWriteCollectionCount(nativeWriter, (ulong)collection.LongCount());
             RecursiveArrayPush((ICollection)collection, elementTypes, 0);
         }
 
@@ -221,30 +221,30 @@ namespace FFF
         {
             switch(type)
             {
-                case Type.Bool     : fffWriterPushArrayElementsBool(nativeWriter,                        (      bool[])array , (uint)array.Length); break;
-                case Type.Byte     : fffWriterPushArrayElements8   (nativeWriter,                        (      byte[])array , (uint)array.Length); break;
-                case Type.Short    : fffWriterPushArrayElements16  (nativeWriter,                        (    ushort[])array , (uint)array.Length); break;
-                case Type.Tribyte  : fffWriterPushArrayElements24  (nativeWriter,   Tribyte.GetBytesArray((  Tribyte[])array), (uint)array.Length); break;
-                case Type.Pentabyte: fffWriterPushArrayElements40  (nativeWriter, Pentabyte.GetBytesArray((Pentabyte[])array), (uint)array.Length); break;
-                case Type.Hexabyte : fffWriterPushArrayElements48  (nativeWriter,  Hexabyte.GetBytesArray(( Hexabyte[])array), (uint)array.Length); break;
-                case Type.Heptabyte: fffWriterPushArrayElements56  (nativeWriter, Heptabyte.GetBytesArray((Heptabyte[])array), (uint)array.Length); break;
-                case Type.Large    : fffWriterPushArrayElements96  (nativeWriter,  LargeInt.GetBytesArray(( LargeInt[])array), (uint)array.Length); break;
-                case Type.Big      : fffWriterPushArrayElements128 (nativeWriter,    BigInt.GetBytesArray(( BigInt  [])array), (uint)array.Length); break;
-                case Type.Great    : fffWriterPushArrayElements192 (nativeWriter,  GreatInt.GetBytesArray(( GreatInt[])array), (uint)array.Length); break;
-                case Type.Huge     : fffWriterPushArrayElements256 (nativeWriter,   HugeInt.GetBytesArray(( HugeInt [])array), (uint)array.Length); break;
-                case Type.Giant    : fffWriterPushArrayElements512 (nativeWriter,  GiantInt.GetBytesArray(( GiantInt[])array), (uint)array.Length); break;
+                case Type.Bool     : botWriterPushArrayElementsBool(nativeWriter,                        (      bool[])array , (uint)array.Length); break;
+                case Type.Byte     : botWriterPushArrayElements8   (nativeWriter,                        (      byte[])array , (uint)array.Length); break;
+                case Type.Short    : botWriterPushArrayElements16  (nativeWriter,                        (    ushort[])array , (uint)array.Length); break;
+                case Type.Tribyte  : botWriterPushArrayElements24  (nativeWriter,   Tribyte.GetBytesArray((  Tribyte[])array), (uint)array.Length); break;
+                case Type.Pentabyte: botWriterPushArrayElements40  (nativeWriter, Pentabyte.GetBytesArray((Pentabyte[])array), (uint)array.Length); break;
+                case Type.Hexabyte : botWriterPushArrayElements48  (nativeWriter,  Hexabyte.GetBytesArray(( Hexabyte[])array), (uint)array.Length); break;
+                case Type.Heptabyte: botWriterPushArrayElements56  (nativeWriter, Heptabyte.GetBytesArray((Heptabyte[])array), (uint)array.Length); break;
+                case Type.Large    : botWriterPushArrayElements96  (nativeWriter,  LargeInt.GetBytesArray(( LargeInt[])array), (uint)array.Length); break;
+                case Type.Big      : botWriterPushArrayElements128 (nativeWriter,    BigInt.GetBytesArray(( BigInt  [])array), (uint)array.Length); break;
+                case Type.Great    : botWriterPushArrayElements192 (nativeWriter,  GreatInt.GetBytesArray(( GreatInt[])array), (uint)array.Length); break;
+                case Type.Huge     : botWriterPushArrayElements256 (nativeWriter,   HugeInt.GetBytesArray(( HugeInt [])array), (uint)array.Length); break;
+                case Type.Giant    : botWriterPushArrayElements512 (nativeWriter,  GiantInt.GetBytesArray(( GiantInt[])array), (uint)array.Length); break;
 
                 case Type.Int      : 
                     if(array.GetType() == typeof(float[]))
-                        fffWriterPushArrayElementsFloat (nativeWriter, (float[])array, (uint)array.Length);
+                        botWriterPushArrayElementsFloat (nativeWriter, (float[])array, (uint)array.Length);
                     else 
-                        fffWriterPushArrayElements32    (nativeWriter, ( uint[])array, (uint)array.Length); 
+                        botWriterPushArrayElements32    (nativeWriter, ( uint[])array, (uint)array.Length); 
                     break;
                 case Type.Long     : 
                     if(array.GetType() == typeof(double[]))
-                        fffWriterPushArrayElementsDouble(nativeWriter, (double[])array, (uint)array.Length);
+                        botWriterPushArrayElementsDouble(nativeWriter, (double[])array, (uint)array.Length);
                     else 
-                        fffWriterPushArrayElements64    (nativeWriter, ( ulong[])array, (uint)array.Length); break;
+                        botWriterPushArrayElements64    (nativeWriter, ( ulong[])array, (uint)array.Length); break;
 
                 default: throw new Exception("Cannot push array elements, '" + type + "' cannot be translated to a primitive type !");
             }
@@ -259,7 +259,7 @@ namespace FFF
             if(Standard.IsArray(currentType))
             {
                 if(depth > 0)
-                    fffWriterPushCollectionDimension(nativeWriter, (ulong)collection.Count, (byte)Standard.SizeFromCollection(currentType));
+                    botWriterPushCollectionDimension(nativeWriter, (ulong)collection.Count, (byte)Standard.SizeFromCollection(currentType));
                 
                 foreach(object? obj in collection)
                     RecursiveArrayPush((ICollection)obj, elementTypes, depth + 1);
@@ -275,7 +275,7 @@ namespace FFF
             else
             {
                 if(depth > 0)
-                    fffWriterPushCollectionDimension(nativeWriter, (ulong)collection.Count, (byte)Standard.SizeFromCollection(elementTypes[depth - 1]));
+                    botWriterPushCollectionDimension(nativeWriter, (ulong)collection.Count, (byte)Standard.SizeFromCollection(elementTypes[depth - 1]));
                 
                 PushArrayElements(currentType, (Array)collection);
             }
@@ -285,15 +285,15 @@ namespace FFF
         {
             switch(size)
             {
-                case Size.Auto:   fffWriterInitAutoDict  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Tiny:   fffWriterInitTinyDict  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Small:  fffWriterInitSmallDict (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Short:  fffWriterInitShortDict (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Medium: fffWriterInitMediumDict(nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Large:  fffWriterInitLargeDict (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Big:    fffWriterInitBigDict   (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Great:  fffWriterInitGreatDict (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Huge:   fffWriterInitHugeDict  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Auto:   botWriterInitAutoDict  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Tiny:   botWriterInitTinyDict  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Small:  botWriterInitSmallDict (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Short:  botWriterInitShortDict (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Medium: botWriterInitMediumDict(nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Large:  botWriterInitLargeDict (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Big:    botWriterInitBigDict   (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Great:  botWriterInitGreatDict (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Huge:   botWriterInitHugeDict  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
                 default: throw new Exception("Invalid size for writting a dictionary !");
             }
         }
@@ -302,106 +302,106 @@ namespace FFF
         {
             switch(size)
             {
-                case Size.Auto:   fffWriterInitAutoBlob  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Tiny:   fffWriterInitTinyBlob  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Small:  fffWriterInitSmallBlob (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Short:  fffWriterInitShortBlob (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Medium: fffWriterInitMediumBlob(nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Large:  fffWriterInitLargeBlob (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Big:    fffWriterInitBigBlob   (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Great:  fffWriterInitGreatBlob (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
-                case Size.Huge:   fffWriterInitHugeBlob  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Auto:   botWriterInitAutoBlob  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Tiny:   botWriterInitTinyBlob  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Small:  botWriterInitSmallBlob (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Short:  botWriterInitShortBlob (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Medium: botWriterInitMediumBlob(nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Large:  botWriterInitLargeBlob (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Big:    botWriterInitBigBlob   (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Great:  botWriterInitGreatBlob (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
+                case Size.Huge:   botWriterInitHugeBlob  (nativeWriter, fieldName, (ulong)collection.LongCount()); break;
                 default: throw new Exception("Invalid size for writting a blob !");
             }
         }
 
-        [DllImport("libFFF.so")] static private extern IntPtr fffWriterCreate(string path, byte maxDepth);
-        [DllImport("libFFF.so")] static private extern void fffWriterFree(IntPtr writer);
+        [DllImport("libBOT.so")] static private extern IntPtr botWriterCreate(string path, byte maxDepth);
+        [DllImport("libBOT.so")] static private extern void botWriterFree(IntPtr writer);
 
-        [DllImport("libFFF.so")] static private extern bool fffWriterHasNameLength(IntPtr writer);
-        [DllImport("libFFF.so")] static private extern bool fffWriterHasFullWidth(IntPtr writer);
-        [DllImport("libFFF.so")] static private extern byte fffWriterGetFullWidth(IntPtr writer);
+        [DllImport("libBOT.so")] static private extern bool botWriterHasNameLength(IntPtr writer);
+        [DllImport("libBOT.so")] static private extern bool botWriterHasFullWidth(IntPtr writer);
+        [DllImport("libBOT.so")] static private extern byte botWriterGetFullWidth(IntPtr writer);
 
-        [DllImport("libFFF.so")] static private extern void fffWriterInitFile(IntPtr writer, byte fffOptions);
-        [DllImport("libFFF.so")] static private extern void fffWriterSetNameLengthOption(IntPtr writer, byte nameLength);
+        [DllImport("libBOT.so")] static private extern void botWriterInitFile(IntPtr writer, byte botOptions);
+        [DllImport("libBOT.so")] static private extern void botWriterSetNameLengthOption(IntPtr writer, byte nameLength);
 
-        [DllImport("libFFF.so")] static private extern void fffWriterObjectBegin(IntPtr writer, string fieldName);
-        [DllImport("libFFF.so")] static private extern void fffWriterObjectEnd(IntPtr writer);
+        [DllImport("libBOT.so")] static private extern void botWriterObjectBegin(IntPtr writer, string fieldName);
+        [DllImport("libBOT.so")] static private extern void botWriterObjectEnd(IntPtr writer);
 
-        [DllImport("libFFF.so")] static private extern void fffWriterFlush(IntPtr writer);
+        [DllImport("libBOT.so")] static private extern void botWriterFlush(IntPtr writer);
 
-        [DllImport("libFFF.so")] static private extern void fffWriterWriteBool(IntPtr writer, string fieldName, bool data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite8(IntPtr writer, string fieldName, byte data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite16(IntPtr writer, string fieldName, ushort data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite24(IntPtr writer, string fieldName, byte[] data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite32(IntPtr writer, string fieldName, uint data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWriteFloat(IntPtr writer, string fieldName, float data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite40(IntPtr writer, string fieldName, byte[] data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite48(IntPtr writer, string fieldName, byte[] data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite56(IntPtr writer, string fieldName, byte[] data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite64(IntPtr writer, string fieldName, ulong data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWriteDouble(IntPtr writer, string fieldName, double data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite96(IntPtr writer, string fieldName, byte[] data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite128(IntPtr writer, string fieldName, byte[] data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite192(IntPtr writer, string fieldName, byte[] data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite256(IntPtr writer, string fieldName, byte[] data);
-        [DllImport("libFFF.so")] static private extern void fffWriterWrite512(IntPtr writer, string fieldName, byte[] data);
+        [DllImport("libBOT.so")] static private extern void botWriterWriteBool(IntPtr writer, string fieldName, bool data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite8(IntPtr writer, string fieldName, byte data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite16(IntPtr writer, string fieldName, ushort data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite24(IntPtr writer, string fieldName, byte[] data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite32(IntPtr writer, string fieldName, uint data);
+        [DllImport("libBOT.so")] static private extern void botWriterWriteFloat(IntPtr writer, string fieldName, float data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite40(IntPtr writer, string fieldName, byte[] data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite48(IntPtr writer, string fieldName, byte[] data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite56(IntPtr writer, string fieldName, byte[] data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite64(IntPtr writer, string fieldName, ulong data);
+        [DllImport("libBOT.so")] static private extern void botWriterWriteDouble(IntPtr writer, string fieldName, double data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite96(IntPtr writer, string fieldName, byte[] data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite128(IntPtr writer, string fieldName, byte[] data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite192(IntPtr writer, string fieldName, byte[] data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite256(IntPtr writer, string fieldName, byte[] data);
+        [DllImport("libBOT.so")] static private extern void botWriterWrite512(IntPtr writer, string fieldName, byte[] data);
 
 #region COLLECTIONS
 
-        [DllImport("libFFF.so")] static private extern void fffWriterWriteCollectionElementType(IntPtr writer, byte fffType);
-        [DllImport("libFFF.so")] static private extern void fffWriterWriteCollectionElementTypes(IntPtr writer, byte[] fffTypes, uint length);
-        [DllImport("libFFF.so")] static private extern void fffWriterWriteCollectionCount(IntPtr writer, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushCollectionDimension(IntPtr writer, ulong count, byte size);
+        [DllImport("libBOT.so")] static private extern void botWriterWriteCollectionElementType(IntPtr writer, byte botType);
+        [DllImport("libBOT.so")] static private extern void botWriterWriteCollectionElementTypes(IntPtr writer, byte[] botTypes, uint length);
+        [DllImport("libBOT.so")] static private extern void botWriterWriteCollectionCount(IntPtr writer, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushCollectionDimension(IntPtr writer, ulong count, byte size);
         
 
-        [DllImport("libFFF.so")] static private extern void fffWriterInitAutoArray(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitTinyArray(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitSmallArray(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitShortArray(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitMediumArray(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitLargeArray(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitBigArray(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitGreatArray(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitHugeArray(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitAutoArray(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitTinyArray(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitSmallArray(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitShortArray(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitMediumArray(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitLargeArray(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitBigArray(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitGreatArray(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitHugeArray(IntPtr writer, string fieldName, ulong count);
 
-        [DllImport("libFFF.so")] static private extern void fffWriterInitAutoDict(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitTinyDict(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitSmallDict(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitShortDict(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitMediumDict(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitLargeDict(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitBigDict(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitGreatDict(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitHugeDict(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitAutoDict(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitTinyDict(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitSmallDict(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitShortDict(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitMediumDict(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitLargeDict(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitBigDict(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitGreatDict(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitHugeDict(IntPtr writer, string fieldName, ulong count);
 
-        [DllImport("libFFF.so")] static private extern void fffWriterInitAutoBlob(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitTinyBlob(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitSmallBlob(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitShortBlob(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitMediumBlob(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitLargeBlob(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitBigBlob(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitGreatBlob(IntPtr writer, string fieldName, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterInitHugeBlob(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitAutoBlob(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitTinyBlob(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitSmallBlob(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitShortBlob(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitMediumBlob(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitLargeBlob(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitBigBlob(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitGreatBlob(IntPtr writer, string fieldName, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterInitHugeBlob(IntPtr writer, string fieldName, ulong count);
 
 
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElementsBool(IntPtr writer, bool[] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements8(IntPtr writer, byte[] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements16(IntPtr writer, ushort[] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements24(IntPtr writer, byte[][] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements32(IntPtr writer, uint[] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElementsFloat(IntPtr writer, float[] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements40(IntPtr writer, byte[][] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements48(IntPtr writer, byte[][] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements56(IntPtr writer, byte[][] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements64(IntPtr writer, ulong[] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElementsDouble(IntPtr writer, double[] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements96(IntPtr writer, byte[][] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements128(IntPtr writer,byte[][] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements192(IntPtr writer,byte[][] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements256(IntPtr writer,byte[][] data, ulong count);
-        [DllImport("libFFF.so")] static private extern void fffWriterPushArrayElements512(IntPtr writer,byte[][] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElementsBool(IntPtr writer, bool[] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements8(IntPtr writer, byte[] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements16(IntPtr writer, ushort[] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements24(IntPtr writer, byte[][] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements32(IntPtr writer, uint[] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElementsFloat(IntPtr writer, float[] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements40(IntPtr writer, byte[][] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements48(IntPtr writer, byte[][] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements56(IntPtr writer, byte[][] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements64(IntPtr writer, ulong[] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElementsDouble(IntPtr writer, double[] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements96(IntPtr writer, byte[][] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements128(IntPtr writer,byte[][] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements192(IntPtr writer,byte[][] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements256(IntPtr writer,byte[][] data, ulong count);
+        [DllImport("libBOT.so")] static private extern void botWriterPushArrayElements512(IntPtr writer,byte[][] data, ulong count);
     
 #endregion
     }

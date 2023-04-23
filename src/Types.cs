@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Numerics;
 
-namespace FFF
+namespace BOT
 {
 	public struct Primitive
 	{

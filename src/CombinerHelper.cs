@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace FFF
+namespace BOT
 {
     /// <summary>
     /// Combine severals sets of bytes to a primitive. Note that if your data has a variable size or it's size cannot be mapped with one of the primitives, use the blob instead.

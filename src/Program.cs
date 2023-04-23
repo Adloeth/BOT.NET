@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Json;
 
-namespace FFF;
+namespace BOT;
 
 public struct Vector2i : IPrimitive
 {
@@ -103,8 +103,8 @@ internal class Program
     {
         Console.WriteLine("Hello, World!");
         string path = Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName;
-        Console.WriteLine("Path is '" + path + "/test.fff" + "'");
-        using(Writer writer = new Writer(path + "/test.fff"/*, Options.FixedNameLength*/))
+        Console.WriteLine("Path is '" + path + "/test.bot" + "'");
+        using(Writer writer = new Writer(path + "/test.bot"/*, Options.FixedNameLength*/))
         {
             //writer.SetNameLength(5);
             //byte[] data = new byte[64];

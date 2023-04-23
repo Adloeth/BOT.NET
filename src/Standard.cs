@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace FFF
+namespace BOT
 {
     [Flags] public enum Options : byte
     {
@@ -84,10 +84,10 @@ namespace FFF
 
     public static class Standard
     {
-        public static bool IsSystemLittleEndian() => fffIsLittleEndian();
+        public static bool IsSystemLittleEndian() => botIsLittleEndian();
         public static bool IsDefault(ISerializable obj) => obj == null || obj.IsDefault;
 
-        [DllImport("libFFF.so")] static private extern bool fffIsLittleEndian();
+        [DllImport("libBOT.so")] static private extern bool botIsLittleEndian();
 
         public static Type GetCollectionType(Collection collection, Size size, ulong count)
         {
